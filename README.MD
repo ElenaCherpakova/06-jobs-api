@@ -51,8 +51,8 @@ Email Validation Regex
 #### Security
 
 - helmet
-- cors
-- xss-clean
+- cors - cross origin resource sharing. it is mechanism to allow or restrict request resources on web server depending on where HTTP request was initiated.
+- xss-clean - sanitizes a user input in req.body, req.query and req.params. As a result protects us from cross sides scripting attacks where attacker tries to inject some malicious code.
 - express-rate-limit
 
 Swagger UI
