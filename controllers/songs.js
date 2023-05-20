@@ -3,11 +3,22 @@ const { StatusCodes } = require('http-status-codes');
 const { BadRequestError, NotFoundError } = require('../errors');
 
 const getAllSongs = async (req, res) => {
-  res.send('get all songs');
+  // get all songs under the userId
+  const songs = await Song.find({ createdBy: req.user.userId }).sort(
+    'createdAt'
+  );
+  res.status(StatusCodes.OK).json({ songs, count: songs.length });
 };
 
 const getSong = async (req, res) => {
-  res.send('get one song');
+  const { userId } = req.user;
+  const { id: songId } = req.params;
+
+  const song = await Song.findOne({ _id: songId, createdBy: userId });
+  if (!song) {
+    throw new NotFoundError(`No song with id ${songId}`);
+  }
+  res.status(StatusCodes.OK).json({ song });
 };
 const createSong = async (req, res) => {
   //create a property createBy on req.body and assign to req.user.userId
@@ -17,10 +28,39 @@ const createSong = async (req, res) => {
 };
 
 const updateSong = async (req, res) => {
-  res.send('update a song');
+  const { userId } = req.user;
+  const { id: songId } = req.params;
+  const { title, artist } = req.body;
+  if (title === '' || artist === '') {
+    throw new BadRequestError('Title or artist must be provided');
+  }
+
+  const updateSong = await Song.findByIdAndUpdate(
+    {
+      _id: songId,
+      createdBy: userId,
+    },
+    req.body,
+    { new: true, runValidators: true }
+  );
+  if (!updateSong) {
+    throw new NotFoundError(`No song with id ${songId}`);
+  }
+  res.status(StatusCodes.OK).send({ updateSong });
 };
 const deleteSong = async (req, res) => {
-  res.send('delete a song');
+  const { userId } = req.user;
+  const { id: songId } = req.params;
+
+  const song = await Song.findOneAndRemove({
+    _id: songId,
+    createdBy: userId,
+  });
+  if (!song) {
+    throw new NotFoundError(`No song with id ${songId}`);
+  }
+
+  res.status(StatusCodes.OK).send();
 };
 
 module.exports = {
