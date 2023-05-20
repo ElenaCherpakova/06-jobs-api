@@ -32,7 +32,7 @@ const updateSong = async (req, res) => {
   const { id: songId } = req.params;
   const { title, artist } = req.body;
   if (title === '' || artist === '') {
-    throw new BadRequestError('Title or artist cannot be empty');
+    throw new BadRequestError('Title or artist must be provided');
   }
 
   const updateSong = await Song.findByIdAndUpdate(
