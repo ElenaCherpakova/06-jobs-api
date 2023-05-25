@@ -60,7 +60,8 @@ const deleteSong = async (req, res) => {
     throw new NotFoundError(`No song with id ${songId}`);
   }
 
-  res.status(StatusCodes.OK).send();
+  // res.status(StatusCodes.OK).send();
+  res.status(StatusCodes.OK).json({ msg: 'The entry was deleted.' });
 };
 
 module.exports = {

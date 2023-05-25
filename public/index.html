@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Songs List</title>
+  </head>
+  <body>
+    <h1>Songs List</h1>
+    <button type="button" id="logoff" style="display: none">logoff</button>
+    <hr />
+    <p id="message"></p>
+    <hr />
+    <div id="logon-register" style="display: none">
+      <button type="button" id="logon">Logon</button>
+      <button type="button" id="register">Register</button>
+    </div>
+    <div id="logon-div" style="display: none">
+      <form>
+        <div>
+          <label>email:</label>
+          <input type="email" id="email" />
+        </div>
+        <div>
+          <label>password:</label>
+          <input type="password" id="password" />
+        </div>
+        <button type="button" id="logon-button">logon</button>
+        <button type="button" id="logon-cancel">cancel</button>
+      </form>
+    </div>
+    <div id="register-div" style="display: none">
+      <form>
+        <div>
+          <label for="name">name:</label>
+          <input type="text" id="name" />
+        </div>
+        <div>
+          <label for="email1">email:</label>
+          <input type="email" id="email1" />
+        </div>
+        <div>
+          <label for="password1">password:</label>
+          <input type="password" id="password1" />
+        </div>
+        <div>
+          <label for="password2">verify password:</label>
+          <input type="password" id="password2" />
+        </div>
+        <button type="button" id="register-button">register</button>
+        <button type="button" id="register-cancel">cancel</button>
+      </form>
+    </div>
+    <div id="songs" style="display: none">
+      <p id="songs-message"></p>
+      <table id="songs-table" style="display: none">
+        <tr id="songs-table-header">
+          <th>Title</th>
+          <th>Artist</th>
+          <th>Mood</th>
+          <th colspan="2"></th>
+        </tr>
+      </table>
+      <button type="button" id="add-song">add song</button>
+    </div>
+    <div id="edit-song" style="display: none">
+      <form>
+        <div>
+          <label for="title">title:</label>
+          <input type="text" id="title" />
+        </div>
+        <div>
+          <label for="artist">artist:</label>
+          <input type="text" id="artist" />
+        </div>
+        <div>
+          <label for="mood">mood:</label>
+          <select id="mood">
+            <option value="happy">happy</option>
+            <option value="sad">sad</option>
+            <option value="energetic">energetic</option>
+            <option value="relaxed">relaxed</option>
+          </select>
+        </div>
+        <button type="button" id="adding-song">add</button>
+        <button type="button" id="edit-cancel">cancel</button>
+      </form>
+    </div>
+    <script src="./songs.js"></script>
+  </body>
+</html>

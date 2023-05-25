@@ -1,4 +1,5 @@
-import { CustomAPIError } from '../errors';
+const { CustomAPIError } = require('../errors');
+
 const MONGO_ERR_DUPLICATE_ENTRY = 11000;
 
 const { StatusCodes } = require('http-status-codes');
