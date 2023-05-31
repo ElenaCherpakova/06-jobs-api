@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const songsMessage = document.getElementById('songs-message');
   const editCancel = document.getElementById('edit-cancel');
 
+let data;
   async function buildSongsTable(songsTable, songsTableHeader, token, message) {
     try {
       const response = await fetch('/api/v1/songs', {
@@ -37,30 +38,30 @@ document.addEventListener('DOMContentLoaded', () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      const data = await response.json();
-      const children = [songsTableHeader];
-      if (response.status === 200) {
-        if (data.count === 0) {
-          songsTable.replaceChildren(...children);
-          return 0;
-        } else {
-          for (let i = 0; i < data.songs.length; i++) {
-            let editButton = `<td><button type="button" class="editButton" data-id=${data.songs[i]._id}>edit</button></td>`;
-            let deleteButton = `<td><button type="button" class="deleteButton" data-id=${data.songs[i]._id}>delete</button></td>`;
-            let rowHTML = `<td>${data.songs[i].title}</td><td>${data.songs[i].artist}</td><td>${data.songs[i].mood}</td>${editButton}${deleteButton}`;
-            let rowEntry = document.createElement('tr');
-            rowEntry.innerHTML = rowHTML;
-            children.push(rowEntry);
-          }
-          songsTable.replaceChildren(...children);
-        }
-        return data.count;
-      } else {
-        message.textContent = data.error;
-        return 0;
-      }
+      data = await response.json();
     } catch (error) {
       message.textContent = 'A communication error occurred.';
+      return 0;
+    }
+    const children = [songsTableHeader];
+    if (response.status === 200) {
+      if (data.count === 0) {
+        songsTable.replaceChildren(...children);
+        return 0;
+      } else {
+        for (let i = 0; i < data.songs.length; i++) {
+          let editButton = `<td><button type="button" class="editButton" data-id=${data.songs[i]._id}>edit</button></td>`;
+          let deleteButton = `<td><button type="button" class="deleteButton" data-id=${data.songs[i]._id}>delete</button></td>`;
+          let rowHTML = `<td>${data.songs[i].title}</td><td>${data.songs[i].artist}</td><td>${data.songs[i].mood}</td>${editButton}${deleteButton}`;
+          let rowEntry = document.createElement('tr');
+          rowEntry.innerHTML = rowHTML;
+          children.push(rowEntry);
+        }
+        songsTable.replaceChildren(...children);
+      }
+      return data.count;
+    } else {
+      message.textContent = data.error;
       return 0;
     }
   }
@@ -145,22 +146,22 @@ document.addEventListener('DOMContentLoaded', () => {
             password: password.value,
           }),
         });
-        const data = await response.json();
-        if (response.status === 200) {
-          message.textContent = `Logon successful.  Welcome ${data.user.name}`;
-          token = data.token;
-          localStorage.setItem('token', token);
-          showing.style.display = 'none';
-          thisEvent = new Event('startDisplay');
-          email.value = '';
-          password.value = '';
-          document.dispatchEvent(thisEvent);
-        } else {
-          message.textContent = data.msg;
-        }
+        data = await response.json();
       } catch (err) {
         // console.log(response)
         message.textContent = 'A communications error occurred.';
+      }
+      if (response.status === 200) {
+        message.textContent = `Logon successful.  Welcome ${data.user.name}`;
+        token = data.token;
+        localStorage.setItem('token', token);
+        showing.style.display = 'none';
+        thisEvent = new Event('startDisplay');
+        email.value = '';
+        password.value = '';
+        document.dispatchEvent(thisEvent);
+      } else {
+        message.textContent = data.msg;
       }
       suspendInput = false;
     } else if (e.target === registerButton) {
@@ -180,25 +181,24 @@ document.addEventListener('DOMContentLoaded', () => {
               password: password1.value,
             }),
           });
-          const data = await response.json();
-
-          if (response.status === 201) {
-            message.textContent = `Registration successful.  Welcome, ${data.user.name}!`;
-            token = data.token;
-            localStorage.setItem('token', token);
-            showing.style.display = 'none';
-            thisEvent = new Event('startDisplay');
-            document.dispatchEvent(thisEvent);
-            name.value = '';
-            email1.value = '';
-            password1.value = '';
-            password2.value = '';
-          } else {
-            message.textContent = data.msg;
-          }
+          data = await response.json();
         } catch (err) {
           // console.log(response)
           message.textContent = 'A communications error occurred.';
+        }
+        if (response.status === 201) {
+          message.textContent = `Registration successful.  Welcome, ${data.user.name}!`;
+          token = data.token;
+          localStorage.setItem('token', token);
+          showing.style.display = 'none';
+          thisEvent = new Event('startDisplay');
+          document.dispatchEvent(thisEvent);
+          name.value = '';
+          email1.value = '';
+          password1.value = '';
+          password2.value = '';
+        } else {
+          message.textContent = data.msg;
         }
         suspendInput = false;
       }
@@ -235,22 +235,22 @@ document.addEventListener('DOMContentLoaded', () => {
               mood: mood.value,
             }),
           });
-          const data = await response.json();
-          if (response.status === 201) {
-            //successful create
-            message.textContent = 'The song was created.';
-            showing.style.display = 'none';
-            thisEvent = new Event('startDisplay');
-            document.dispatchEvent(thisEvent);
-            title.value = '';
-            artist.value = '';
-            mood.value = 'happy';
-          } else {
-            // failure
-            message.textContent = data.msg;
-          }
+          data = await response.json();
         } catch (err) {
           message.textContent = 'A communication error occurred.';
+        }
+        if (response.status === 201) {
+          //successful create
+          message.textContent = 'The song was created.';
+          showing.style.display = 'none';
+          thisEvent = new Event('startDisplay');
+          document.dispatchEvent(thisEvent);
+          title.value = '';
+          artist.value = '';
+          mood.value = 'happy';
+        } else {
+          // failure
+          message.textContent = data.msg;
         }
         suspendInput = false;
       } else {
@@ -270,21 +270,21 @@ document.addEventListener('DOMContentLoaded', () => {
               mood: mood.value,
             }),
           });
-          const data = await response.json();
-          if (response.status === 200) {
-            message.textContent = 'The song was updated.';
-            showing.style.display = 'none';
-            title.value = '';
-            artist.value = '';
-            mood.value = 'pending';
-            thisEvent = new Event('startDisplay');
-            document.dispatchEvent(thisEvent);
-          } else {
-            message.textContent = data.msg;
-          }
+          data = await response.json();
         } catch (err) {
           message.textContent = 'A communication error occurred.';
         }
+      }
+      if (response.status === 200) {
+        message.textContent = 'The song was updated.';
+        showing.style.display = 'none';
+        title.value = '';
+        artist.value = '';
+        mood.value = 'pending';
+        thisEvent = new Event('startDisplay');
+        document.dispatchEvent(thisEvent);
+      } else {
+        message.textContent = data.msg;
       }
       suspendInput = false;
     } else if (e.target.classList.contains('editButton')) {
@@ -298,25 +298,25 @@ document.addEventListener('DOMContentLoaded', () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        const data = await response.json();
-        console.log(data);
-        if (response.status === 200) {
-          title.value = data.song.title;
-          artist.value = data.song.artist;
-          mood.value = data.song.mood;
-          showing.style.display = 'none';
-          showing = editSong;
-          showing.style.display = 'block';
-          addingSong.textContent = 'update';
-          message.textContent = '';
-        } else {
-          // might happen if the list has been updated since last display
-          message.textContent = 'The song was not found';
-          thisEvent = new Event('startDisplay');
-          document.dispatchEvent(thisEvent);
-        }
+        data = await response.json();
+        // console.log(data);
       } catch (err) {
         message.textContent = 'A communications error has occurred.';
+      }
+      if (response.status === 200) {
+        title.value = data.song.title;
+        artist.value = data.song.artist;
+        mood.value = data.song.mood;
+        showing.style.display = 'none';
+        showing = editSong;
+        showing.style.display = 'block';
+        addingSong.textContent = 'update';
+        message.textContent = '';
+      } else {
+        // might happen if the list has been updated since last display
+        message.textContent = 'The song was not found';
+        thisEvent = new Event('startDisplay');
+        document.dispatchEvent(thisEvent);
       }
       suspendInput = false;
     } else if (e.target.classList.contains('deleteButton')) {
@@ -329,14 +329,14 @@ document.addEventListener('DOMContentLoaded', () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        const data = await response.json();
-        if (response.status === 200) {
-          message.textContent = 'The song was successfully deleted.';
-          thisEvent = new Event('startDisplay');
-          document.dispatchEvent(thisEvent);
-        }
+        data = await response.json();
       } catch (error) {
         message.textContent = 'A communications error has occurred.';
+      }
+      if (response.status === 200) {
+        message.textContent = 'The song was successfully deleted.';
+        thisEvent = new Event('startDisplay');
+        document.dispatchEvent(thisEvent);
       }
       suspendInput = false;
     }
