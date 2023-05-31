@@ -27,9 +27,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const addingSong = document.getElementById('adding-song');
   const songsMessage = document.getElementById('songs-message');
   const editCancel = document.getElementById('edit-cancel');
-  let data;
-  let response;
+
+  // let data;
+  // let response;
   async function buildSongsTable(songsTable, songsTableHeader, token, message) {
+    let data;
+    let response;
     try {
       response = await fetch('/api/v1/songs', {
         method: 'GET',
@@ -135,6 +138,8 @@ document.addEventListener('DOMContentLoaded', () => {
       password2.value = '';
     } else if (e.target === logonButton) {
       suspendInput = true;
+      let data;
+      let response;
       try {
         response = await fetch('/api/v1/auth/login', {
           method: 'POST',
@@ -147,7 +152,6 @@ document.addEventListener('DOMContentLoaded', () => {
           }),
         });
         data = await response.json();
-        
       } catch (err) {
         // console.log(response)
         message.textContent = 'A communications error occurred.';
@@ -170,6 +174,8 @@ document.addEventListener('DOMContentLoaded', () => {
         message.textContent = 'The passwords entered do not match.';
       } else {
         suspendInput = true;
+        let data;
+        let response;
         try {
           response = await fetch('/api/v1/auth/register', {
             method: 'POST',
@@ -183,8 +189,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }),
           });
           data = await response.json();
-
-          
         } catch (err) {
           // console.log(response)
           message.textContent = 'A communications error occurred.';
@@ -225,6 +229,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!editSong.dataset.id) {
         // this is an attempted add
         suspendInput = true;
+        let data;
+        let response
         try {
           response = await fetch('/api/v1/songs', {
             method: 'POST',
@@ -239,7 +245,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }),
           });
           data = await response.json();
-          
         } catch (err) {
           message.textContent = 'A communication error occurred.';
         }
@@ -260,6 +265,8 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         // this is an update
         suspendInput = true;
+        let data;
+        let response;
         try {
           const songID = editSong.dataset.id;
           response = await fetch(`/api/v1/songs/${songID}`, {
@@ -275,7 +282,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }),
           });
           data = await response.json();
-          
         } catch (err) {
           message.textContent = 'A communication error occurred.';
         }
@@ -295,6 +301,8 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (e.target.classList.contains('editButton')) {
       editSong.dataset.id = e.target.dataset.id;
       suspendInput = true;
+      let data;
+      let response;
       try {
         response = await fetch(`/api/v1/songs/${e.target.dataset.id}`, {
           method: 'GET',
@@ -305,7 +313,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         data = await response.json();
         console.log(data);
-        
       } catch (err) {
         message.textContent = 'A communications error has occurred.';
       }
@@ -327,6 +334,8 @@ document.addEventListener('DOMContentLoaded', () => {
       suspendInput = false;
     } else if (e.target.classList.contains('deleteButton')) {
       suspendInput = true;
+      let data;
+      let response;
       try {
         response = await fetch(`/api/v1/songs/${e.target.dataset.id}`, {
           method: 'DELETE',
@@ -336,8 +345,6 @@ document.addEventListener('DOMContentLoaded', () => {
           },
         });
         data = await response.json();
-
-       
       } catch (error) {
         message.textContent = 'A communications error has occurred.';
       }
