@@ -27,11 +27,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const addingSong = document.getElementById('adding-song');
   const songsMessage = document.getElementById('songs-message');
   const editCancel = document.getElementById('edit-cancel');
-
-let data;
+  let data;
+  let response;
   async function buildSongsTable(songsTable, songsTableHeader, token, message) {
     try {
-      const response = await fetch('/api/v1/songs', {
+      response = await fetch('/api/v1/songs', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -136,7 +136,7 @@ let data;
     } else if (e.target === logonButton) {
       suspendInput = true;
       try {
-        const response = await fetch('/api/v1/auth/login', {
+        response = await fetch('/api/v1/auth/login', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -147,6 +147,7 @@ let data;
           }),
         });
         data = await response.json();
+        
       } catch (err) {
         // console.log(response)
         message.textContent = 'A communications error occurred.';
@@ -170,7 +171,7 @@ let data;
       } else {
         suspendInput = true;
         try {
-          const response = await fetch('/api/v1/auth/register', {
+          response = await fetch('/api/v1/auth/register', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -182,6 +183,8 @@ let data;
             }),
           });
           data = await response.json();
+
+          
         } catch (err) {
           // console.log(response)
           message.textContent = 'A communications error occurred.';
@@ -223,7 +226,7 @@ let data;
         // this is an attempted add
         suspendInput = true;
         try {
-          const response = await fetch('/api/v1/songs', {
+          response = await fetch('/api/v1/songs', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -236,6 +239,7 @@ let data;
             }),
           });
           data = await response.json();
+          
         } catch (err) {
           message.textContent = 'A communication error occurred.';
         }
@@ -258,7 +262,7 @@ let data;
         suspendInput = true;
         try {
           const songID = editSong.dataset.id;
-          const response = await fetch(`/api/v1/songs/${songID}`, {
+          response = await fetch(`/api/v1/songs/${songID}`, {
             method: 'PATCH',
             headers: {
               'Content-Type': 'application/json',
@@ -271,27 +275,28 @@ let data;
             }),
           });
           data = await response.json();
+          
         } catch (err) {
           message.textContent = 'A communication error occurred.';
         }
-      }
-      if (response.status === 200) {
-        message.textContent = 'The song was updated.';
-        showing.style.display = 'none';
-        title.value = '';
-        artist.value = '';
-        mood.value = 'pending';
-        thisEvent = new Event('startDisplay');
-        document.dispatchEvent(thisEvent);
-      } else {
-        message.textContent = data.msg;
+        if (response.status === 200) {
+          message.textContent = 'The song was updated.';
+          showing.style.display = 'none';
+          title.value = '';
+          artist.value = '';
+          mood.value = 'pending';
+          thisEvent = new Event('startDisplay');
+          document.dispatchEvent(thisEvent);
+        } else {
+          message.textContent = data.msg;
+        }
       }
       suspendInput = false;
     } else if (e.target.classList.contains('editButton')) {
       editSong.dataset.id = e.target.dataset.id;
       suspendInput = true;
       try {
-        const response = await fetch(`/api/v1/songs/${e.target.dataset.id}`, {
+        response = await fetch(`/api/v1/songs/${e.target.dataset.id}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -299,7 +304,8 @@ let data;
           },
         });
         data = await response.json();
-        // console.log(data);
+        console.log(data);
+        
       } catch (err) {
         message.textContent = 'A communications error has occurred.';
       }
@@ -322,7 +328,7 @@ let data;
     } else if (e.target.classList.contains('deleteButton')) {
       suspendInput = true;
       try {
-        const response = await fetch(`/api/v1/songs/${e.target.dataset.id}`, {
+        response = await fetch(`/api/v1/songs/${e.target.dataset.id}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
@@ -330,6 +336,8 @@ let data;
           },
         });
         data = await response.json();
+
+       
       } catch (error) {
         message.textContent = 'A communications error has occurred.';
       }
